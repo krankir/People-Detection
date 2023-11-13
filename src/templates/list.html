@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+      .btn-new {
+          width: 100px;
+    border: none;
+    border-radius: 10px;
+    text-decoration: none;
+    color: white;
+    background: #296be0;
+    box-shadow: 0 5px 0 #003CC5;
+}
+
+.btn-new:hover {
+    box-shadow: none;
+    position: relative;
+    top: 5px;
+}
+
+.btn-new.button2 {
+    background-color: #d94848;
+    color: white;
+    background: #f60b26;
+    box-shadow: 0 5px 0 #c5003b;
+}
+.btn-new.button2:hover {
+    box-shadow: none;
+    position: relative;
+    top: 5px;
+}
+
+
+.btn-new.button3 {
+    background-color: #26aa6f;
+    color: white;
+    background: #07753c;
+    box-shadow: 0 5px 0 #095014;
+}
+.btn-new.button3:hover {
+    box-shadow: none;
+    position: relative;
+    top: 5px;
+}
+
+    .main-container {
+  display: flex;
+}
+    .logs-container {
+      width: 40%;
+      margin-right: 40px;
+      margin-left: 40px;
+      max-height: 84vh;
+      border: 2px solid #000;
+      overflow-y: auto;
+    }
+    .scroll-container {
+      max-height: 84vh;
+      width: 50%;
+      overflow-y: auto;
+    }
+
+    /* Стили для элементов списка */
+    .list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+    }
+
+    .list-item .buttons {
+      display: flex;
+    }
+
+    .list-item .buttons form {
+      margin-left: 10px; /* Расстояние между кнопками */
+}
+
+
+    .search-container {
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      background-color: #f0f0f0;
+    }
+
+    .search-input {
+      font-size: 15px;
+      padding: 10px;
+      width: 70%;
+    }
+
+    .search-button, .back-button {
+      font-size: 15px;
+      padding: 10px;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="search-container">
+    <input type="text" class="search-input" id="searchInput" placeholder="Поиск по названию">
+    <button class="search-button" onclick="searchElements()">Поиск</button>
+    <button class="back-button" onclick="resetSearch()">Назад</button>
+      <form action='/admin/background_log_checking' method='get' style="display: inline;">
+            <button class="back-button">Запустить мониторинг парсеров</button>
+      </form>
+  </div>
+<div class="main-container">
+  <div class="scroll-container">
+    <ul id="elementsList">
+    {% for element in elements %}
+      <li class="list-item">
+        <span>{{ element.object_name }}</span>
+        <div class="buttons">
+<!--          <form action='/admin/restart_pod' method='post' style="display: inline;">-->
+<!--            <input hidden name="pod_name" value='{{ element.metadata.name }}'>-->
+<!--            <button class="btn-new" type='submit' title="Рестарт">рестарт</button>-->
+<!--          </form>-->
+<!--          <form action='/admin/delete_pod' method='post' style="display: inline;">-->
+<!--            <input hidden name="pod_name" value='{{ element.metadata.name }}'>-->
+<!--            <button class="btn-new button2" type='submit' title="Удалить">удалить</button>-->
+<!--          </form>-->
+<!--          <form action='/admin/logs_pod/' method='post' style="display: inline;">-->
+<!--            <input hidden name="pod_name" value='{{ element.metadata.name }}'>-->
+<!--            <button class="btn-new button3" type='submit' title="Вывод логов">логи️</button>-->
+<!--          </form>-->
+        </div>
+      </li>
+    {% endfor %}
+    </ul>
+  </div>
+  <div class="logs-container">
+
+    <form action="/minio/upload" method="post">
+        <p>
+            Name:<br>
+            <input name="path"/>
+        </p>
+        <input type="submit" value="Send" />
+    </form>
+  </div>
+</div>
+  <script>
+    function searchElements() {
+      const searchText = document.getElementById('searchInput').value.toLowerCase();
+      const elementsList = document.getElementById('elementsList');
+      const elements = elementsList.getElementsByTagName('li');
+
+      for (let i = 0; i < elements.length; i++) {
+        const elementName = elements[i].innerText.toLowerCase();
+        if (elementName.includes(searchText)) {
+          elements[i].style.display = '';
+        } else {
+          elements[i].style.display = 'none';
+        }
+      }
+    }
+
+
+    function resetSearch() {
+      const elementsList = document.getElementById('elementsList');
+      const elements = elementsList.getElementsByTagName('li');
+
+      for (let i = 0; i < elements.length; i++) {
+        elements[i].style.display = '';
+      }
+      document.getElementById('searchInput').value = '';
+    }
+  </script>
+</body>
+</html>
